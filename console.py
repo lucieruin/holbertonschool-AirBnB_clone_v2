@@ -131,14 +131,32 @@ class HBNBCommand(cmd.Cmd):
 
         if len(arguments) > 1:
             for arg in arguments[1:]:
-                key, value = arg.split("=")
+                split_arg = arg.split("=")
+                if len(split_arg) != 2:
+                    print(f"Invalid parameter: {arg}")
+                    continue
+
+                key, value = split_arg[0], split_arg[1]
+
                 if '"' in value:
+                    # Remove the quotes and replace underscores with spaces
+                    value = value.replace('\\"', '"')  # Revert escaped quotes
                     value = value.replace('"', '')
                     value = value.replace('_', ' ')
                 elif '.' in value:
-                    value = float(value)
+                    # Check if it's a float
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        print(f"Invalid value for float: {value}")
+                        continue
                 else:
-                    value = int(value)
+                    # Check if it's an integer
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        print(f"Invalid value for integer: {value}")
+                        continue
 
                 setattr(new_instance, key, value)
 
