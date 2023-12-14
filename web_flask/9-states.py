@@ -4,27 +4,23 @@
 from flask import Flask, render_template
 from models import storage
 from models.state import State
-from models.city import City
 
 app = Flask(__name__)
 
 
-@app.route('/states_list', strict_slashes=False)
+@app.route('/states', strict_slashes=False)
 def states_no_id():
     """ Defines a root for the root path for states without id """
     states = storage.all(State)
     return render_template('9-states.html', states=states)
 
 
-@app.route('/states_list/<id>', strict_slashes=False)
+@app.route('/states/<id>', strict_slashes=False)
 def states_id(id):
     """ Defines a root for the root path for states with id"""
     states = storage.all(State)
-    for state in states:
-        if storage.__class__.__name__ == 'DBStorage':
-            state.cities = state.cities
-        else:
-            state.cities = storage.all(City)
+    state_id = "State." + id if id else None
+    return render_template('9-states.html', states=states, state_id=state_id)
 
 
 @app.teardown_appcontext
